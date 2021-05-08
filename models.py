@@ -18,6 +18,9 @@ class User(db.Model):
     first_name = db.Column(db.String(30), nullable=False)
     last_name = db.Column(db.String(30), nullable=False)
 
+    def get_full_name(self):
+        return f"{self.first_name} {self.last_name}"
+
     @classmethod
     def register(cls, username, password, email, first_name, last_name):
         """Encrypts the password for storage, and then creates a returns a new user object with the information provided"""

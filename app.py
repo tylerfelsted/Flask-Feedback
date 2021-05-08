@@ -33,7 +33,7 @@ def register_user():
         db.session.add(new_user)
         db.session.commit()
         session['username'] = new_user.username
-        return redirect("/secret")
+        return redirect(f"/users/{new_user.username}")
 
     return render_template("register.html", form=form)
 
@@ -47,21 +47,28 @@ def login_user():
         )
         if user:
             session['username'] = user.username
-            return redirect("/secret")
+            return redirect(f"/users/{user.username}")
         else:
             form.username.errors = ["Invalid Username/Password"]
 
     return render_template("login.html", form=form)
 
-
-
-@app.route('/secret')
-def show_secret():
+@app.route("/users/<username>")
+def show_user_details(username):
     if 'username' not in session:
         flash("Please login or register first")
-        return redirect('/')
+        return redirect('/login')
     else:
-        return render_template("secret.html")
+        user = User.query.get_or_404(username)
+        return render_template("user_details.html", user=user)
+
+# @app.route('/secret')
+# def show_secret():
+#     if 'username' not in session:
+#         flash("Please login or register first")
+#         return redirect('/')
+#     else:
+#         return render_template("secret.html")
         
 @app.route('/logout')
 def logout_user():
