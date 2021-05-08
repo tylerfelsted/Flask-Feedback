@@ -10,7 +10,13 @@
 <body>
     <nav class="navbar navbar-light bg-primary justify-content-between">
         <div class="container">
-            <a href="/" class="navbar-brand text-light">Feedback</a>
+            <a href="/" class="navbar-brand text-light">
+                {% if session['username'] %}
+                {{session['username']}}
+                {% else %}
+                Feedback
+                {% endif %}
+            </a>
             <ul class="nav navbar-nav flex-row float-right">
                 {% if session['username'] %}
                 <li class="nav-item">
