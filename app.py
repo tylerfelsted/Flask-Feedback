@@ -63,12 +63,13 @@ def logout_user():
 
 @app.route("/users/<username>")
 def show_user_details(username):
-    if 'username' not in session:
-        flash("Please login or register first")
-        return redirect('/login')
-    else:
+    if session.get('username') == username:
         user = User.query.get_or_404(username)
         return render_template("user_details.html", user=user)
+    elif session.get('username'):
+        return redirect(f'/users/{session["username"]}')
+    flash("Please login or register first")
+    return redirect('/login')
 
 @app.route("/users/<username>/delete", methods=["POST"])
 def delete_user(username):
@@ -101,7 +102,35 @@ def show_add_feedback_form(username):
             db.session.commit()
             flash("Feedback added")
         else:
-            return render_template("feedback_form.html", form=form)
+            return render_template("feedback_form.html", form=form, update_form=False)
     else:
         flash("User is not authorized to add feedback")
+    return redirect('/')
+
+@app.route("/feedback/<int:feedback_id>/update", methods=["GET", "POST"])
+def show_update_feedback_form(feedback_id):
+    feedback = Feedback.query.get_or_404(feedback_id)
+    if session.get('username') == feedback.user.username:
+        form = FeedbackForm(obj=feedback)
+        if form.validate_on_submit():
+            feedback.title = form.title.data
+            feedback.content = form.content.data
+            db.session.add(feedback)
+            db.session.commit()
+            flash("Feedback Updated")
+        else:
+            return render_template("feedback_form.html", form=form, update_form=True)
+    else:
+        flash("User is not authorized to edit feedback")
+    return redirect('/')
+
+@app.route("/feedback/<int:feedback_id>/delete", methods=["POST"])
+def delete_feedback(feedback_id):
+    feedback = Feedback.query.get_or_404(feedback_id)
+    if session.get('username') == feedback.user.username:
+        db.session.delete(feedback)
+        db.session.commit()
+        flash('Feedback deleted')
+    else:
+        flash("Not authorized to delete this Feedback")
     return redirect('/')

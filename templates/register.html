@@ -2,7 +2,8 @@
 {% block title %}Register User{% endblock %}
 
 {% block content %}
-<h1>Register</h1>
+<h1 class="mb-0">Register</h1>
+<div class="mb-3">Already have an account? <a href="/login">Login here</a></div>
 
 <form method="POST">
     {{ form.hidden_tag() }}

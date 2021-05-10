@@ -2,7 +2,7 @@
 {% block title %}Add Feedback{% endblock %}
 
 {% block content %}
-<h1>Add Feedback</h1>
+<h1>{% if update_form %}Edit Feedback{% else %}Add Feedback{% endif %}</h1>
 
 <form method="POST">
     {{ form.hidden_tag() }}
@@ -18,7 +18,7 @@
     </p>
     {% endfor %}
 
-    <button class="btn btn-success" type="submit">Add Feedback</button>
+    <button class="btn btn-success" type="submit">{% if update_form %}Edit Feedback{% else %}Add Feedback{% endif %}</button>
 </form>
 
 
